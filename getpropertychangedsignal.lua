@@ -1,7 +1,7 @@
 -- very usefulnt
 --[[
 local a = t:New({b = 5})
-a:GetPropertyChangedSignal(a, "b", function()
+a:GetPropertyChangedSignal("b", function()
     warn(a.b)
 end)
 a.b = 536344
@@ -39,15 +39,13 @@ function t:New(props)
     return obj
 end
 
-function t:GetPropertyChangedSignal(obj, prop, func)
-    local props_connected = objs[obj].props_connected
+function t:GetPropertyChangedSignal(prop, func)
+    local props_connected = self.props_connected
     table.insert(props_connected, prop)
     
-    local connections = objs[obj].connections
+    local connections = self.connections
     connections[prop] = connections[prop] or {}
     
     local o = connections[prop]
     table.insert(o, func)
 end
-
-return t
