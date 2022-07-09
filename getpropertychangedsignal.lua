@@ -1,3 +1,12 @@
+-- very usefulnt
+--[[
+local a = t:New({b = 5})
+a:GetPropertyChangedSignal(a, "b", function()
+    warn(a.b)
+end)
+a.b = 536344
+]]
+
 local t = {
     Objects = {}
 }
