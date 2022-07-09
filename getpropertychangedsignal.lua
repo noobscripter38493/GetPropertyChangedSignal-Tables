@@ -16,17 +16,14 @@ local objs = t.Objects
 function t:New(props)
     local properties = setmetatable(props, t)
     
-    local obj = setmetatable({props_connected = {}, connections = {}}, {
-        __newindex = function(self2, i, v)
-            properties[i] = v
-            
-            local props_connected = self2.props_connected
-            if not table.find(props_connected, i) then
-                return
-            end
+    local obj = setmetatable({connections = {}}, {
+        __newindex = function(self2, prop, v)
+            properties[prop] = v
             
             local connections = self2.connections
-            for _, v2 in ipairs(connections[i]) do
+            if not connections[prop] then return end
+            
+            for _, v2 in ipairs(connections[prop]) do
                 v2()
             end
         end,
@@ -40,12 +37,9 @@ function t:New(props)
 end
 
 function t:GetPropertyChangedSignal(prop, func)
-    local props_connected = self.props_connected
-    table.insert(props_connected, prop)
-    
     local connections = self.connections
     connections[prop] = connections[prop] or {}
     
     local o = connections[prop]
-    table.insert(o, func)
+    o[#o + 1] = func
 end
