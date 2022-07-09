@@ -43,3 +43,5 @@ function t:GetPropertyChangedSignal(prop, func)
     local o = connections[prop]
     o[#o + 1] = func
 end
+
+return t
