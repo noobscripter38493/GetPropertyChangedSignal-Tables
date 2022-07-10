@@ -1,10 +1,12 @@
 -- very usefulnt
 --[[
 local a = t:New({b = 5})
-a:GetPropertyChangedSignal("b", function()
+local connection = a:GetPropertyChangedSignal("b", function()
     warn(a.b)
 end)
 a.b = 536344
+connection:Disconnect()
+a.b = 4822
 ]]
 
 local t = {
@@ -42,6 +44,10 @@ function t:GetPropertyChangedSignal(prop, func)
     
     local o = connections[prop]
     o[#o + 1] = func
+    
+    return setmetatable(connections, t)
 end
 
-return t
+function t:Disconnect()
+    table.clear(self)
+end
