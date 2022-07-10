@@ -45,7 +45,7 @@ function t:GetPropertyChangedSignal(prop, func)
     local o = connections[prop]
     o[#o + 1] = func
     
-    return setmetatable(connections, t)
+    return setmetatable(o, t)
 end
 
 function t:Disconnect()
