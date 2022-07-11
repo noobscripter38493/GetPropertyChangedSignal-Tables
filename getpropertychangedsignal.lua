@@ -10,9 +10,11 @@ a.b = 4822
 ]]
 
 local t = {
-    Objects = {}
+    Objects = {},
+    refs = {}
 }
 t.__index = t
+setrawmetatable(function() end, t)
 
 local objs = t.Objects
 function t:New(props)
@@ -25,8 +27,10 @@ function t:New(props)
             local connections = self2.connections
             if not connections[prop] then return end
             
-            for _, v2 in ipairs(connections[prop]) do
-                v2()
+            for i2, v2 in next, connections[prop] do
+                if t.refs[v2] then
+                    v2()
+                end
             end
         end,
         
@@ -42,12 +46,14 @@ function t:GetPropertyChangedSignal(prop, func)
     local connections = self.connections
     connections[prop] = connections[prop] or {}
     
+    t.refs[func] = func
+    
     local o = connections[prop]
     o[#o + 1] = func
     
-    return setmetatable(o, t)
+    return func
 end
 
 function t:Disconnect()
-    table.clear(self)
+    t.refs[self] = nil
 end
