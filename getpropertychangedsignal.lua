@@ -29,7 +29,7 @@ function t:New(props)
             
             for i2, v2 in next, connections[prop] do
                 if t.refs[v2] then
-                    v2()
+                    task.spawn(v2)
                 end
             end
         end,
